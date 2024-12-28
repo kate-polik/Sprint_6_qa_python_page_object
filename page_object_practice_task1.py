@@ -4,7 +4,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-# Класс страницы авторизации
+# класс страницы авторизации
 class LoginPageMesto:
     email_field = [By.ID, 'email']
     password_field = [By.ID, 'password']
@@ -28,25 +28,25 @@ class LoginPageMesto:
         self.click_sign_in_button()
 
 
-# Класс главной страницы
+# класс главной страницы
 class HomePageMesto:
     # создай локатор для поля «Занятие» в профиле пользователя
-    profile_description = ...
+    profile_description = [By.CLASS_NAME, 'profile__description']
 
     def __init__(self, driver):
         self.driver = driver
 
-    # метод ожидания загрузки страницы - ожидаем загрузку по появлению поля Занятие
+    # метод ожидания загрузки страницы
+    # ожидаем появление поля «Занятие»
     def wait_for_load_home_page(self):
         WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(self.profile_description))
 
-    # метод для получения текстового значения поля «Занятие»
+    # метод для получения значения поля «Занятие»
     def get_description(self):
-        return ...
+        return self.driver.find_element(*self.profile_description).text
 
 
 class TestPraktikum:
-
     driver = None
 
     @classmethod
@@ -59,21 +59,21 @@ class TestPraktikum:
         self.driver.get('https://qa-mesto.praktikum-services.ru/')
 
         # создай объект класса страницы авторизации
-        ...
+        login_page = LoginPageMesto(self.driver)
         # выполни авторизацию
-        ...
+        login_page.login('email учётной записи', 'пароль учётной записи')
 
         # создай объект класса главной страницы приложения
-        ...
+        home_page = HomePageMesto(self.driver)
         # дождись загрузки главной страницы
-        ...
-        # сохрани в переменную description текстовое значение поля «Занятие»
-        description = ...
+        home_page.wait_for_load_home_page()
+        # сохрани в переменную description значение поля «Занятие»
+        description = home_page.get_description()
 
-        # проверь, через assert что полученное текстовое значение поля «Занятие» совпадает с ожидаемым
-        assert ...
+        # проверь через assert, что полученное текстовое значение поля «Занятие» совпадает с ожидаемым
+        assert description == 'занятие пользователя для твоей учетной записи'
 
     @classmethod
     def teardown_class(cls):
-        # Закрой браузер
-        ...
+        # закрой браузер
+        cls.driver.quit()

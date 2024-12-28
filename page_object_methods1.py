@@ -1,6 +1,5 @@
 from selenium.webdriver.common.by import By
 
-
 class HomePageMesto:
     # локатор кнопки добавления нового места
     add_new_place_button = [By.CLASS_NAME, 'profile__add-button']
@@ -31,4 +30,9 @@ class HomePageMesto:
     def click_save_button(self):
         self.driver.find_element(*self.save_button).click()
 
-    # напиши шаг добавления нового места
+    # шаг добавления нового места
+    def add_new_place(self):
+        self.click_add_new_place_button()
+        self.set_name()
+        self.set_link_to_picture_field()
+        self.click_save_button()

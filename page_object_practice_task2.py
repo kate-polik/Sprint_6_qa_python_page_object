@@ -30,54 +30,40 @@ class LoginPageMesto:
 
 # Класс заголовка
 class HeaderPageMesto:
-    # создай локатор для элемента c email в заголовке страницы
-    header_user = ...
+    header_user = [By.CLASS_NAME, 'header__user']
 
     def __init__(self, driver):
         self.driver = driver
 
-    # метод ожидания загрузки страницы
     def wait_for_load_header(self):
         WebDriverWait(self.driver, 3).until(expected_conditions.visibility_of_element_located(self.header_user))
 
-    # метод для получения текста элемента в заголовке
     def email_in_header(self):
-        ...
+        return self.driver.find_element(*self.header_user).text
 
 
 # класс с автотестом
 class TestPraktikum:
-
     driver = None
 
     @classmethod
     def setup_class(cls):
-        # создали драйвер для браузера Chrome
         cls.driver = webdriver.Chrome()
 
     def test_check_email_in_header(self):
-        # перешли на страницу тестового приложения
         self.driver.get('https://qa-mesto.praktikum-services.ru/')
 
-        # создай объект класса страницы авторизации
-        ...
-        # выполни авторизацию
+        login_page = LoginPageMesto(self.driver)
         email = "Введи сюда email твоей учётной записи"
         password = "Введи сюда пароль твоей учётной записи"
-        # передавай эти переменные внутрь метода
-        ...
+        login_page.login(email, password)
 
-        # создай объект класса заголовка приложения
-        ...
-        # дождись загрузки заголовка
-        ...
-        # получи текст элемента в заголовке
-        email_from_header = ...
+        header_page = HeaderPageMesto(self.driver)
+        header_page.wait_for_load_header()
+        email_from_header = header_page.email_in_header()
 
-        # сделай проверку, что полученное значение совпадает c email
-        assert ...
+        assert email_from_header == email
 
     @classmethod
     def teardown_class(cls):
-        # Закрой браузер
-        ...
+        cls.driver.quit()
